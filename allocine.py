@@ -5,6 +5,8 @@ from scrapy.utils.project import get_project_settings
 from scrapy.shell import inspect_response
 from .teamMKV import TeamMKV
 
+NEW_MOVIES_FILE='new_movies.json'
+
 class Allocine(scrapy.Spider):
     name = 'allocine'
     # custom_settings={
@@ -14,8 +16,8 @@ class Allocine(scrapy.Spider):
     # }
 
     def start_requests(self):
-        with open('teamMKV_films.json') as f:
-            for index, movie in enumerate(json.load(f)[0]['data']):
+        with open(NEW_MOVIES_FILE) as f:
+            for index, movie in json.load(f).items():
                 yield scrapy.Request(url='http://www.allocine.fr/recherche/?q='+movie[0], meta={'index':index,'title': movie[0], 'year':movie[1], 'filename':movie[2]})
 
     def parse(self, response):
