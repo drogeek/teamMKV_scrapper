@@ -1,0 +1,8 @@
+python3 -m venv teamMKV_env
+source teamMKV_env/bin/activate
+pip3 install --upgrade pip
+pip3 install -r requirements.txt
+python3 script.py
+
+This will generate a file called teamMKV_movies_with_score.json
+It will take a long time the first time it is run, and then only look for new movies the other time
