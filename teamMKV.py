@@ -28,6 +28,10 @@ class Movie(scrapy.Item):
     sub=scrapy.Field(
         output_processor=MapCompose(partial(lang_sub_processor,group_idx=4)),
     )
+    download_nb=scrapy.Field(
+        input_processor=MapCompose(remove_tags,lambda x : x[1:]),
+        output_processor=Join(),
+    )
 
 class TeamMKV(scrapy.Spider):
     name = 'teamMKV'
@@ -38,6 +42,7 @@ class TeamMKV(scrapy.Spider):
             il = ItemLoader(item=Movie())
             parsed_pack = tr_elem.xpath('./td[position() = 1]').extract_first()
             parsed_data = tr_elem.xpath('./td[position() = 2]/b/a/@title').extract_first()
+            parsed_download_nb = tr_elem.xpath('./td[position() = 4]').extract_first()
             loader = ItemLoader(Movie(), tr_elem)
             m = re.match('(.*)([0-9]{4}).*\.[\[{][^{]*\}(?:\{([^{]*)\})?(?:\{Sub\.(.*)})?',parsed_data)
             il.add_value('index', parsed_pack)
@@ -45,4 +50,5 @@ class TeamMKV(scrapy.Spider):
             il.add_value('year', m.group(2))
             il.add_value('lang', m)
             il.add_value('sub', m)
+            il.add_value('download_nb',parsed_download_nb)
             yield il.load_item()

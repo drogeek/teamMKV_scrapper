@@ -41,8 +41,6 @@ def crawl():
             new_movies = json.load(new_file)
             new_movies_title_set = set((x['index'],x['title']) for x in new_movies)
             difference = new_movies_title_set
-    print(difference)
-    print(dict((x,y) for x,y in difference))
     if difference:
         notifier = notify2.Notification("New movies available",'',"notification-message-im")
         notifier.show()
