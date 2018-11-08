@@ -36,7 +36,11 @@ class Movie(scrapy.Item):
 class TeamMKV(scrapy.Spider):
     name = 'teamMKV'
     start_urls = ['http://xdcclist.us.to/?team=Team-MKV&xdcc_id=1']
-
+    custom_settings={
+         'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
+         'FEED_FORMAT': 'json',
+         'FEED_URI': 'teamMKV_movies.json',
+    }
     def parse(self, response):
         for tr_elem in response.xpath('//tr[position() > 1]'):
             il = ItemLoader(item=Movie())

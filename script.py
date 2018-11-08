@@ -10,13 +10,7 @@ OLD_TEAMMKV_OUTPUT_FILE='teamMKV_movies.json.old'
 TEAMMKV_OUTPUT_FILE='teamMKV_movies.json'
 NEW_MOVIES_FILE='new_movies.json'
 configure_logging()
-runner = CrawlerRunner({
-    'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
-    'FEED_URI': TEAMMKV_OUTPUT_FILE,
-    'FEED_FORMAT': 'json',
-    'ROBOTSTXT_OBEY': 'False',
-    'LOG_ENABLED': 'True'
-})
+runner = CrawlerRunner()
 
 @defer.inlineCallbacks
 def crawl():

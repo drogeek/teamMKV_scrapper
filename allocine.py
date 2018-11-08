@@ -76,6 +76,7 @@ class Allocine(scrapy.Spider):
                     movie_info['user_score']=item_cont[0].xpath('.//span[@class="stareval-note"]/text()').extract_first().strip()
                 else:
                     movie_info['user_score']=None
+        yield movie_info
 
 
             
