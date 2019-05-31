@@ -7,6 +7,7 @@ from w3lib.html import remove_tags
 
 NEW_MOVIES_FILE='new_movies.json'
 TEAMMKV_OUTPUT_FILE='teamMKV_movies.json'
+SCORED_TEAMMKV_OUTPUT_FILE='teamMKV_movies_with_scores.json'
 
 class Movie_Score(scrapy.Item):
     index=scrapy.Field()
@@ -17,13 +18,14 @@ class Movie_Score(scrapy.Item):
     download_nb=scrapy.Field()
     score=scrapy.Field()
     user_score=scrapy.Field()
+    thumbnail_img=scrapy.Field()
 
 class Allocine(scrapy.Spider):
     name = 'allocine'
     custom_settings={
          'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
          'FEED_FORMAT': 'jsonlines',
-         'FEED_URI': 'teamMKV_movies_with_scores.json',
+         'FEED_URI': SCORED_TEAMMKV_OUTPUT_FILE,
          'DOWNLOAD_DELAY': 1.5
     }
     
@@ -31,7 +33,6 @@ class Allocine(scrapy.Spider):
         for movie in parsed_json:
             if movie['index'] == index:
                 return movie
-                break
         raise KeyError
 
     def start_requests(self):
@@ -55,10 +56,13 @@ class Allocine(scrapy.Spider):
 
     def parse_main(self, response):
         item_cont=response.xpath('//div[@class="rating-item-content"]')
-        ms = Movie_Score()
+        #ms = Movie_Score()
         movie_info = response.meta['movie_info'] 
-        for key, value in movie_info.items():
-            ms[key] = value 
+        thumbnail_img=response.xpath('//img[@class="thumbnail-img"]')[0]
+        if thumbnail_img:
+            movie_info['thumbnail_img']=thumbnail_img.xpath('@src').extract_first()
+        #for key, value in movie_info.items():
+        #    ms[key] = value 
         first_element, second_element = None, None
         if len(item_cont) == 2:
             first_element, second_element = [item_cont[i].xpath('span/text()').extract_first() for i in range(2)]

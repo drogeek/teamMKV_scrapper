@@ -3,10 +3,10 @@ from twisted.internet import reactor, defer
 from scrapy.crawler import CrawlerRunner
 from scrapy.utils.log import configure_logging
 from teamMKV import TeamMKV
-from allocine import Allocine
+from allocine import Allocine, SCORED_TEAMMKV_OUTPUT_FILE
 import os, json, notify2
 
-OLD_TEAMMKV_OUTPUT_FILE='teamMKV_movies.json.old'
+OLD_TEAMMKV_OUTPUT_FILE='.previousteamMKV_movies.json'
 TEAMMKV_OUTPUT_FILE='teamMKV_movies.json'
 NEW_MOVIES_FILE='new_movies.json'
 configure_logging()
@@ -41,8 +41,12 @@ def crawl():
         with open(NEW_MOVIES_FILE,'w') as f:
             json.dump(dict(difference),f)
         print("new movies available: {}".format(difference))
+        yield runner.crawl(Allocine)
+        with open(SCORED_TEAMMKV_OUTPUT_FILE,'r') as f:
+            scoredJson = [ json.loads(l) for l in f.readlines() ]
+            indexDifference = set(x[0] for x in difference)
+            print(list(filter(lambda x : x['index'] in indexDifference, scoredJson)))
 
-    yield runner.crawl(Allocine)
     reactor.stop()
 
 crawl()
