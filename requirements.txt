@@ -9,7 +9,7 @@ dbus-python==1.2.8
 hyperlink==18.0.0
 idna==2.7
 incremental==17.5.0
-lxml==4.2.5
+lxml==4.6.3
 notify2==0.3.1
 parsel==1.5.1
 pyasn1==0.4.4
